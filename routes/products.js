@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/connection');
 
-router.get('/', (req, res) => {
-    db.query('SELECT * FROM Product', (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(results);
-    });
+router.get('/products', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM Product');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 module.exports = router;
-
