@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     const [rows] = await db.query('SELECT * FROM product');
     res.json(rows);
   } catch (err) {
-    console.error("MySQL error:", err); // <-- log full error
+    console.error("MySQL error:", err.message); // <-- log full error
     res.status(500).json({ error: 'Database error. DJ Khaled' });
   }
 });
