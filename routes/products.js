@@ -8,9 +8,10 @@ router.get('/', async (req, res) => {
     const [rows] = await db.query('SELECT * FROM Product');
     res.json(rows);
   } catch (err) {
-    console.error(err);
+    console.error("MySQL error:", err); // <-- log full error
     res.status(500).json({ error: 'Database error' });
   }
 });
+
 
 module.exports = router;
