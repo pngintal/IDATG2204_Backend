@@ -12,7 +12,7 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/users', require('./routes/addresses'));
 app.use('/api/users', require('./routes/brands'));
 app.use('/api/users', require('./routes/carts'));
-app.use('/api/users', require('./routes/caritems'));
+app.use('/api/users', require('./routes/cartitems'));
 app.use('/api/users', require('./routes/categories'));
 app.use('/api/users', require('./routes/orders'));
 app.use('/api/users', require('./routes/orderitems'));
