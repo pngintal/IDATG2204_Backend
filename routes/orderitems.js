@@ -5,7 +5,7 @@ const db = require('../db/connection');
 // GET /api/orderitems
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM orderitems');
+    const [rows] = await db.query('SELECT * FROM order_items');
     res.json(rows);
   } catch (err) {
     console.error("MySQL error:", err.message); // <-- log full error
