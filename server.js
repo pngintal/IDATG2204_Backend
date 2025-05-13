@@ -9,16 +9,16 @@ app.use(express.json());
 // Routes
 app.use('/api/products', require('./routes/products'));
 app.use('/api/users', require('./routes/users'));
-app.use('/api/users', require('./routes/addresses'));
-app.use('/api/users', require('./routes/brands'));
-app.use('/api/users', require('./routes/carts'));
-app.use('/api/users', require('./routes/cartitems'));
-app.use('/api/users', require('./routes/categories'));
-app.use('/api/users', require('./routes/orders'));
-app.use('/api/users', require('./routes/orderitems'));
-app.use('/api/users', require('./routes/payments'));
-app.use('/api/users', require('./routes/postcodes'));
-app.use('/api/users', require('./routes/reviews'));
+app.use('/api/addresses', require('./routes/addresses'));
+app.use('/api/brands', require('./routes/brands'));
+app.use('/api/carts', require('./routes/carts'));
+app.use('/api/cartitems', require('./routes/cartitems'));
+app.use('/api/categories', require('./routes/categories'));
+app.use('/api/orders', require('./routes/orders'));
+app.use('/api/orderitems', require('./routes/orderitems'));
+app.use('/api/payments', require('./routes/payments'));
+app.use('/api/postcodes', require('./routes/postcodes'));
+app.use('/api/reviews', require('./routes/reviews'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
