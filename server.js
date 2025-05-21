@@ -30,7 +30,7 @@ app.use('/api/orderitems', require('./routes/orderitems'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/postcodes', require('./routes/postcodes'));
 app.use('/api/reviews', require('./routes/reviews'));
-app.use('/api/reviews/user', require('./routes/userReviews'));
+app.use('/api/userReviews', require('./routes/userReviews'));
 app.use('/api/auth', require('./routes/auth'));
 
 const PORT = process.env.PORT || 3000;

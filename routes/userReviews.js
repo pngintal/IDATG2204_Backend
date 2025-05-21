@@ -1,4 +1,4 @@
-// GET /api/reviews/user/:userID — reviews made by 1 user
+// GET /api/userReviews/:userID — reviews made by 1 user
 router.get('/:UserId', async (req, res) => {
   const { UserIDId } = req.params;
 

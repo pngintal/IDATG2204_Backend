@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/connection');
 
-// GET /api/cart — all cart records (admin/testing)
+// GET /api/carts — all cart records (admin/testing)
 router.get('/', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM cart');
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/cart/:userId — full cart with products for a user
+// GET /api/carts/:userId — full cart with products for a user
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -38,7 +38,7 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-// POST /api/cart — add item to cart
+// POST /api/carts — add item to cart
 router.post('/', async (req, res) => {
   const { userId, productId, quantity } = req.body;
 
@@ -85,4 +85,6 @@ router.delete('/:cartItemId', async (req, res) => {
   }
 });
 
-module.exports = router;
+
+
+module.exports = router;''
