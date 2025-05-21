@@ -18,7 +18,7 @@ router.get('/:userId', async (req, res) => {
   const userId = req.params.userId;
 
   try {
-    const [rows] = await db.query('SELECT * FROM address WHERE user_id = ?', [userId]);
+    const [rows] = await db.query('SELECT * FROM address WHERE userID = ?', [userId]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'No addresses found for the specified user.' });
