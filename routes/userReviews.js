@@ -1,5 +1,5 @@
 // GET /api/reviews/user/:userID — reviews made by 1 user
-router.get('user/:UserId', async (req, res) => {
+router.get('/:UserId', async (req, res) => {
   const { UserIDId } = req.params;
 
   try {
