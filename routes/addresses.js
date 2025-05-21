@@ -13,5 +13,22 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/addresses/:userId
+router.get('/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM address WHERE user_id = ?', [userId]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No addresses found for the specified user.' });
+    }
+
+    res.json(rows);
+  } catch (err) {
+    console.error("MySQL error:", err.message);
+    res.status(500).json({ error: 'Database error.' });
+  }
+});
 
 module.exports = router;
