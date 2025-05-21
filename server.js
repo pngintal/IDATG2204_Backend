@@ -19,6 +19,7 @@ app.use('/api/orderitems', require('./routes/orderitems'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/postcodes', require('./routes/postcodes'));
 app.use('/api/reviews', require('./routes/reviews'));
+app.use('/api/auth', require('./routes/auth'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
