@@ -29,6 +29,22 @@ router.get('/:productId', async (req, res) => {
   }
 });
 
+// GET /api/reviews/:userID — reviews made by 1 user
+router.get('/:UserId', async (req, res) => {
+  const { UserIDId } = req.params;
+
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM review WHERE UserID = ?',
+      [UserId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("MySQL error:", err.message);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
 // POST /api/reviews — create a new review
 router.post('/', async (req, res) => {
   const { ProductID, UserID, Comment, Rating } = req.body;
@@ -51,3 +67,4 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
