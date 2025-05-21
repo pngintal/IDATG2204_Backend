@@ -29,8 +29,8 @@ router.get('/:productId', async (req, res) => {
   }
 });
 
-// GET /api/reviews/:userID — reviews made by 1 user
-router.get('/:UserId', async (req, res) => {
+// GET /api/reviews/user/:userID — reviews made by 1 user
+router.get('user/:UserId', async (req, res) => {
   const { UserIDId } = req.params;
 
   try {
