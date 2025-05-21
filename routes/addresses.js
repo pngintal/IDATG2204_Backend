@@ -31,4 +31,25 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
+// POST /api/addresses — add new address
+router.post('/', async (req, res) => {
+  const { userId, street, city, postCode } = req.body;
+
+  if (!userId || !street || !city || !postCode) {
+    return res.status(400).json({ error: 'Missing required address fields' });
+  }
+
+  try {
+    const [result] = await db.query(
+      'INSERT INTO address (UserID, Street, City, PostCode ) VALUES (?, ?, ?, ? )',
+      [userId, street, city, postCode ]
+    );
+
+    res.status(201).json({ message: 'Address added successfully', addressId: result.insertId });
+  } catch (err) {
+    console.error("MySQL insert error:", err.message);
+    res.status(500).json({ error: 'Failed to add address' });
+  }
+});
+
 module.exports = router;
