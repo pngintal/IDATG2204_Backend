@@ -61,6 +61,7 @@ router.get('/details/:orderId', async (req, res) => {
 
   } catch (err) {
     console.error('Order fetch error:', err.message);
+    console.error('Full stack trace:', err);
     res.status(500).json({ error: 'Failed to fetch order details' });
   }
 });
