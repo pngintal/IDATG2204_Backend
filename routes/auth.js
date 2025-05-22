@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/connection');
+const bcrypt = require('bcrypt');
+
+const SALT_ROUNDS = 10;
 
 // POST /api/auth/signup
 router.post('/signup', async (req, res) => {
@@ -11,17 +14,23 @@ router.post('/signup', async (req, res) => {
   }
 
   try {
+    // Check if username exists
     const [existing] = await db.query(
-      'SELECT * FROM user WHERE Username = ?', [username]
+      'SELECT * FROM user WHERE Username = ?',
+      [username]
     );
 
     if (existing.length > 0) {
       return res.status(409).json({ error: 'Username already exists' });
     }
 
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    // Save user
     const [result] = await db.query(
       'INSERT INTO user (Username, Password, Email, FirstName, LastName) VALUES (?, ?, ?, ?, ?)',
-      [username, password, email, firstName, lastName]
+      [username, hashedPassword, email, firstName, lastName]
     );
 
     res.status(201).json({
@@ -50,8 +59,8 @@ router.post('/login', async (req, res) => {
 
   try {
     const [users] = await db.query(
-      'SELECT * FROM user WHERE Username = ? AND Password = ?',
-      [username, password]
+      'SELECT * FROM user WHERE Username = ?',
+      [username]
     );
 
     if (users.length === 0) {
@@ -59,6 +68,13 @@ router.post('/login', async (req, res) => {
     }
 
     const user = users[0];
+
+    // Compare the password
+    const passwordMatch = await bcrypt.compare(password, user.Password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
 
     res.json({
       message: 'Login successful',
@@ -74,8 +90,6 @@ router.post('/login', async (req, res) => {
     console.error('Login error:', err.message);
     res.status(500).json({ error: 'Login failed' });
   }
-console.log('Auth route loaded');
-
 });
 
 module.exports = router;
