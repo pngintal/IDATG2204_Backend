@@ -26,7 +26,7 @@ router.get('/details/:orderId', async (req, res) => {
     const addressId = order.AddressID;
 
     // 2. Get user info
-    const [[user]] = await db.query('SELECT * FROM users WHERE UserID = ?', [userId]);
+    const [[user]] = await db.query('SELECT * FROM user WHERE UserID = ?', [userId]);
 
     // 3. Get address
     const [[address]] = await db.query('SELECT * FROM address WHERE AddressID = ?', [addressId]);
