@@ -13,6 +13,59 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/orders/details/:orderId — full order details
+router.get('/details/:orderId', async (req, res) => {
+  const orderId = req.params.orderId;
+
+  try {
+    // 1. Get order base data
+    const [[order]] = await db.query('SELECT * FROM orders WHERE OrderID = ?', [orderId]);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+
+    const userId = order.UserID;
+    const addressId = order.AddressID;
+
+    // 2. Get user info
+    const [[user]] = await db.query('SELECT * FROM users WHERE UserID = ?', [userId]);
+
+    // 3. Get address
+    const [[address]] = await db.query('SELECT * FROM address WHERE AddressID = ?', [addressId]);
+
+    // 4. Get payment info
+    const [[payment]] = await db.query('SELECT * FROM payment WHERE OrderID = ?', [orderId]);
+
+    // 5. Get order items (join products)
+    const [items] = await db.query(`
+      SELECT oi.Quantity, p.ProductName as name, p.Price as price, p.ImageURL as image
+      FROM order_items oi
+      JOIN product p ON oi.ProductID = p.ProductID
+      WHERE oi.OrderID = ?
+    `, [orderId]);
+
+    // 6. Send structured response
+    res.json({
+      OrderDate: order.OrderDate,
+      Amount: order.Amount,
+      Status: order.Status,
+      Street: address?.Street,
+      PostCode: address?.PostCode,
+      FirstName: user?.FirstName,
+      LastName: user?.LastName,
+      Email: user?.Email,
+      Username: user?.Username,
+      PaymentDate: payment?.PaymentDate,
+      PaymentStatus: payment?.Status,
+      PaymentMethod: payment?.PaymentMethod,
+      Items: items || []
+    });
+
+  } catch (err) {
+    console.error('Order fetch error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch order details' });
+  }
+});
+
+
 // GET /api/orders/:userID
 router.get('/:userID', async (req, res) => {
   const userID = req.params.userID;
@@ -96,58 +149,6 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Order placement failed' });
   } finally {
     connection.release();
-  }
-});
-
-// GET /api/orders/details/:orderId — full order details
-router.get('/details/:orderId', async (req, res) => {
-  const orderId = req.params.orderId;
-
-  try {
-    // 1. Get order base data
-    const [[order]] = await db.query('SELECT * FROM orders WHERE OrderID = ?', [orderId]);
-    if (!order) return res.status(404).json({ error: 'Order not found' });
-
-    const userId = order.UserID;
-    const addressId = order.AddressID;
-
-    // 2. Get user info
-    const [[user]] = await db.query('SELECT * FROM users WHERE UserID = ?', [userId]);
-
-    // 3. Get address
-    const [[address]] = await db.query('SELECT * FROM address WHERE AddressID = ?', [addressId]);
-
-    // 4. Get payment info
-    const [[payment]] = await db.query('SELECT * FROM payment WHERE OrderID = ?', [orderId]);
-
-    // 5. Get order items (join products)
-    const [items] = await db.query(`
-      SELECT oi.Quantity, p.ProductName as name, p.Price as price, p.ImageURL as image
-      FROM order_items oi
-      JOIN product p ON oi.ProductID = p.ProductID
-      WHERE oi.OrderID = ?
-    `, [orderId]);
-
-    // 6. Send structured response
-    res.json({
-      OrderDate: order.OrderDate,
-      Amount: order.Amount,
-      Status: order.Status,
-      Street: address?.Street,
-      PostCode: address?.PostCode,
-      FirstName: user?.FirstName,
-      LastName: user?.LastName,
-      Email: user?.Email,
-      Username: user?.Username,
-      PaymentDate: payment?.PaymentDate,
-      PaymentStatus: payment?.Status,
-      PaymentMethod: payment?.PaymentMethod,
-      Items: items || []
-    });
-
-  } catch (err) {
-    console.error('Order fetch error:', err.message);
-    res.status(500).json({ error: 'Failed to fetch order details' });
   }
 });
 
