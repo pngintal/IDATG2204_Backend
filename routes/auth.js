@@ -3,8 +3,6 @@ const router = express.Router();
 const db = require('../db/connection');
 const bcrypt = require('bcrypt');
 
-const SALT_ROUNDS = 10;
-
 // POST /api/auth/signup
 router.post('/signup', async (req, res) => {
   const { username, password, email, firstName, lastName } = req.body;
@@ -14,20 +12,19 @@ router.post('/signup', async (req, res) => {
   }
 
   try {
-    // Check if username exists
+    // Check if username already exists
     const [existing] = await db.query(
-      'SELECT * FROM user WHERE Username = ?',
-      [username]
+      'SELECT * FROM user WHERE Username = ?', [username]
     );
 
     if (existing.length > 0) {
       return res.status(409).json({ error: 'Username already exists' });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    // Hash password before storing
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Save user
+    // Insert new user
     const [result] = await db.query(
       'INSERT INTO user (Username, Password, Email, FirstName, LastName) VALUES (?, ?, ?, ?, ?)',
       [username, hashedPassword, email, firstName, lastName]
@@ -58,9 +55,9 @@ router.post('/login', async (req, res) => {
   }
 
   try {
+    // Find user by username
     const [users] = await db.query(
-      'SELECT * FROM user WHERE Username = ?',
-      [username]
+      'SELECT * FROM user WHERE Username = ?', [username]
     );
 
     if (users.length === 0) {
@@ -69,7 +66,7 @@ router.post('/login', async (req, res) => {
 
     const user = users[0];
 
-    // Compare the password
+    // Compare hashed password with entered password
     const passwordMatch = await bcrypt.compare(password, user.Password);
 
     if (!passwordMatch) {
