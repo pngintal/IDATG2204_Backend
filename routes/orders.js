@@ -36,10 +36,10 @@ router.get('/details/:orderId', async (req, res) => {
 
     // 5. Get order items (join products)
     const [items] = await db.query(`
-      SELECT oi.Quantity, p.Name as name, p.Price as price, p.ImageURL as image
-      FROM order_items oi
-      JOIN product p ON oi.ProductID = p.ProductID
-      WHERE oi.OrderID = ?
+    SELECT oi.Quantity as quantity, p.Name as name, p.Price as price, p.ImageURL as image
+    FROM order_items oi
+    JOIN product p ON oi.ProductID = p.ProductID
+    WHERE oi.OrderID = ?
     `, [orderId]);
 
     // 6. Send structured response
