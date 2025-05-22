@@ -18,7 +18,7 @@ router.get('/:postcode', async (req, res) => {
   const { postcode } = req.params;
 
   try {
-    const [rows] = await db.query('SELECT City FROM postcode WHERE PostCode = ?', [postcode]);
+    const [rows] = await db.query('SELECT City FROM post WHERE PostCode = ?', [postcode]);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Postcode not found' });
     }
