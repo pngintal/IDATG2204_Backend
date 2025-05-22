@@ -99,7 +99,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /api/orders/:orderId — full order details
+// GET /api/orders/details/:orderId — full order details
 router.get('/:orderId', async (req, res) => {
   const orderId = req.params.orderId;
 
