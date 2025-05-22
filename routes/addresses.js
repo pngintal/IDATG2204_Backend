@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 
   try {
     const [result] = await db.query(
-      'INSERT INTO address (UserID, Street, City, PostCode ) VALUES (?, ?, ? )',
+      'INSERT INTO address (UserID, Street, PostCode ) VALUES (?, ?, ? )',
       [userId, street, postCode ]
     );
 
