@@ -13,5 +13,20 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/postcodes/:postcode
+router.get('/:postcode', async (req, res) => {
+  const { postcode } = req.params;
+
+  try {
+    const [rows] = await db.query('SELECT City FROM postcode WHERE PostCode = ?', [postcode]);
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Postcode not found' });
+    }
+    res.json(rows[0]); // { City: 'Oslo' }
+  } catch (err) {
+    console.error("Postcode lookup error:", err.message);
+    res.status(500).json({ error: 'Failed to look up postcode' });
+  }
+});
 
 module.exports = router;
