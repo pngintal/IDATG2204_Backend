@@ -2,39 +2,29 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/connection');
 
-// GET /api/orders
-router.get('/', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM orders');
-    res.json(rows);
-  } catch (err) {
-    console.error("MySQL error:", err.message); // <-- log full error
-    res.status(500).json({ error: 'Database error.' });
-  }
-});
 
 // GET /api/orders/details/:orderId — full order details
 router.get('/details/:orderId', async (req, res) => {
   const orderId = req.params.orderId;
 
   try {
-    // 1. Get order base data
+    // Get order base data
     const [[order]] = await db.query('SELECT * FROM orders WHERE OrderID = ?', [orderId]);
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
     const userId = order.UserID;
     const addressId = order.AddressID;
 
-    // 2. Get user info
+    // Get user info
     const [[user]] = await db.query('SELECT * FROM user WHERE UserID = ?', [userId]);
 
-    // 3. Get address
+    // Get address
     const [[address]] = await db.query('SELECT * FROM address WHERE AddressID = ?', [addressId]);
 
-    // 4. Get payment info
+    // Get payment info
     const [[payment]] = await db.query('SELECT * FROM payment WHERE OrderID = ?', [orderId]);
 
-    // 5. Get order items (join products)
+    // Get order items (join products)
     const [items] = await db.query(`
     SELECT oi.Quantity as quantity, p.Name as name, p.Price as price, p.ImageURL as image
     FROM order_items oi
@@ -42,7 +32,7 @@ router.get('/details/:orderId', async (req, res) => {
     WHERE oi.OrderID = ?
     `, [orderId]);
 
-    // 6. Send structured response
+    // Send structured response
     res.json({
       OrderDate: order.OrderDate,
       Amount: order.Amount,
