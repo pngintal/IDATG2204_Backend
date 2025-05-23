@@ -2,13 +2,35 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/connection');
 
-// GET /api/products
+// GET /api/products — with filters & sorting
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM product');
+    let query = `SELECT * FROM product WHERE 1=1`;
+    const params = [];
+
+    // Filter by brand
+    if (req.query.brand) {
+      query += ` AND BrandID = ?`;
+      params.push(req.query.brand);
+    }
+
+    // Filter by category
+    if (req.query.category) {
+      query += ` AND CategoryID = ?`;
+      params.push(req.query.category);
+    }
+
+    // Sort by price
+    if (req.query.sort === 'price_asc') {
+      query += ` ORDER BY Price ASC`;
+    } else if (req.query.sort === 'price_desc') {
+      query += ` ORDER BY Price DESC`;
+    }
+
+    const [rows] = await db.query(query, params);
     res.json(rows);
   } catch (err) {
-    console.error("MySQL error:", err.message); // <-- log full error
+    console.error("MySQL error:", err.message);
     res.status(500).json({ error: 'Database error.' });
   }
 });
